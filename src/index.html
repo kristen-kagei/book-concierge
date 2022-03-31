@@ -9,6 +9,9 @@
     %>
     <%= t.include("partials/_head.html", { project }) %>
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="https://unpkg.com/@speechly/browser-ui/core/push-to-talk-button.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/@speechly/browser-ui/core/big-transcript.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/@speechly/browser-ui/core/error-panel.js"></script>
   </head>
   <body data-mode="covers">
 
@@ -112,11 +115,19 @@
 
       <div class="book-detail"></div>
     </main>
-
     <%= t.include("partials/_footer.html", { content: t.include("_footer.html") }) %>
-
+    <big-transcript
+      placement="top">
+    </big-transcript>
+    <push-to-talk-button
+      appid="APP-ID-GOES-HERE"
+      placement="bottom">
+    </push-to-talk-button>
+    <error-panel
+      placement="bottom">
+    </error-panel>
     <script>
-window.conciergeData = {
+      window.conciergeData = {
   reviewers: <%= JSON.stringify(json.reviewers) %>
 };
     </script>

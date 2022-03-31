@@ -10,6 +10,8 @@
   "dependencies": {
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
+    "@speechly/browser-client": "^1.5.0",
+    "@speechly/browser-ui": "^5.3.1",
     "archieml": "^0.4.2",
     "async": "^2.0.0-rc.1",
     "aws-sdk": "^2.601.0",

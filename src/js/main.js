@@ -42,9 +42,12 @@ var defaults = {
 // hashes update filters (usually redundant) and render the main panel
 channel.on("hashchange", async function(params, pastParams = {}) {
   var bodyData = document.body.dataset;
+  console.log(`bodyData: ${JSON.stringify(bodyData)}`);
   var existing = getFilters();
+  console.log(`existing filters: ${JSON.stringify(existing)}`);
   // hash params override existing filters override defaults
   var merged = Object.assign({}, defaults, existing, params);
+  console.log(`merged: ${JSON.stringify(merged)}`);
   bodyData.mode = merged.view;
   bodyData.year = merged.year;
   bodyData.tags = (merged.tags || []).length;
@@ -127,6 +130,7 @@ channel.on("hashchange", async function(params, pastParams = {}) {
 
 // on startup, check for a pre-existing hash
 var startup = hash.parse();
+console.log(`startup: ${JSON.stringify(startup)}`);
 // years is guaranteed to be an array because of the define() above
 if (startup.year || startup.tags) {
   // if found, force a render from the hash, which will update filters accordingly
@@ -153,3 +157,54 @@ var here = new URL(window.location);
 if (here.searchParams.has("screenshot")) {
   document.body.classList.add("screenshot");
 }
+
+// the hash is the state, thus the "source of truth" as stated above
+// hash basically has: year, tags (genre/category), view(list/cover)
+// the above are the variables reflected in the Speechly model
+document
+    .getElementsByTagName("push-to-talk-button")[0]
+    .addEventListener("speechsegment", (e) => {
+      const segment = e.detail;
+      if (segment.isFinal) {
+        console.log("speechsegment message:", segment);
+        console.log("entities:", segment.entities)
+
+        // checks for pre-existing hash state and set it here from earlier variable
+        let state = startup;
+
+        if (segment.intent.intent === 'clear') {
+          state.tags=[]
+          hash.replace(state);
+          setFilters(state);
+        }
+        // since we have more than one entity, we need to check for types and such for each to handle the data
+        (segment.entities).forEach(entity => {
+          console.log(`entity type: ${entity.type}`);
+          console.log(`entity value: ${entity.value}`);
+
+          if (entity.type === 'year') {
+            state.year = entity.value;
+            // we have to replace the state
+            hash.replace(state);
+            setFilters(state);
+          };
+
+          if (entity.type === 'tag') {
+            let tag = entity.value.toLowerCase().replaceAll('and', '&');
+            if (tag === 'eye opening reads') {
+              tag.replace(' ', '-');
+            }
+            if (tag)
+            state.tags = tag;
+            hash.replace(state);
+            setFilters(state);
+          }
+
+          if (entity.type === 'view') {
+            state.view =(entity.value).toLowerCase();
+            hash.replace(state);
+            setFilters(state);
+          }
+        });
+      }
+});

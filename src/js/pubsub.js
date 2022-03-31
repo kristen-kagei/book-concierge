@@ -3,8 +3,10 @@
 var events = {};
 
 var on = function(e, f) {
+  console.log(`on function - event: ${e}`);
   if (!events[e]) events[e] = [];
   events[e].push(f);
+  console.log(`on function - events: ${JSON.stringify(events)}`);
 };
 
 var off = function(e, f) {

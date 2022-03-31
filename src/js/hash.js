@@ -13,6 +13,7 @@ define() lets you set the shape of hash parameters:
 
 var define = function(defs) {
   Object.assign(definitions, defs);
+  console.log(`hash definition: ${JSON.stringify(definitions)}`)
 };
 
 // turn a URL hash into an object based on the defined types
@@ -38,6 +39,7 @@ var parse = function() {
       params[k] = cast(value);
     }
   }
+  console.log(`hash params: ${JSON.stringify(params)}`);
   return params;
 };
 
@@ -82,7 +84,9 @@ var update = function(state) {
 };
 
 var replace = function(state) {
+  console.log(`hash replace - state: ${JSON.stringify(state)}`);
   window.location.hash = serialize(state);
+  console.log(`hash replace - window location hash, serialized: ${JSON.stringify(state)}`);
 };
 
 window.addEventListener("hashchange", onChange);
