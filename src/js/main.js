@@ -193,8 +193,7 @@ document
             let tag = entity.value.toLowerCase().replaceAll('and', '&');
             if (tag === 'eye opening reads') {
               tag.replace(' ', '-');
-            }
-            if (tag)
+            };
             state.tags = tag;
             hash.replace(state);
             setFilters(state);
